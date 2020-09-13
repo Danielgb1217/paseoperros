@@ -1,0 +1,83 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./templates/principal.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:define name="titulo_perro">
+        Listado de Perros - Formulario
+    </ui:define>
+
+    <ui:define name="content">
+        Listado de Perros
+        <h:form id="form">
+            <p:panel id="panelPerros" header="Listado de Perros">
+                <p:panelGrid id="pnlPerros" columns="2">
+                    <p:outputLabel value="Nombre"/>
+                    <p:outputLabel value="#{listaSEController.perroMostrar.nombre}"/>
+                    <p:outputLabel value="Edad"/>
+                    <p:outputLabel value="#{listaSEController.perroMostrar.edad}"/>
+                    <p:outputLabel value="Numero"/>
+                    <p:outputLabel value="#{listaSEController.perroMostrar.numero}"/>
+                </p:panelGrid>
+
+                <p:panelGrid id="buscarPerro" columns="3">
+                    <p:outputLabel value="Ingrese Posicion a Buscar"/>
+                    <p:inputText id="posicion" required="true" value="#{listaSEController.posicion}"/>
+                    <p:commandButton value="Buscar" action="#{listaSEController.buscar()}" update="pnlPerros"/>
+
+
+
+
+                </p:panelGrid>
+
+                <p:panelGrid>
+                    <p:commandButton value="Primero" disabled="#{listaSEController.temp == listaSEController.listaPerros.cabeza}">
+                        <p:ajax listener="#{listaSEController.irPrimero()}" update="panelPerros"/>  
+                    </p:commandButton>  
+                    <p:commandButton value="Siguiente " disabled="#{listaSEController.temp.siguiente == null}">
+                        <p:ajax listener="#{listaSEController.irSiguiente()}" update="panelPerros"/>  
+                    </p:commandButton>   
+                    <p:commandButton value="Ultimo" disabled="#{listaSEController.temp.siguiente == null}">
+                        <p:ajax listener="#{listaSEController.irUltimo()}" update="panelPerros"/>  
+                    </p:commandButton> 
+
+                    <p:panelGrid>
+                        <p:commandButton value="InvertirLista" >
+                            <p:ajax listener="#{listaSEController.invertir()}" update="panelPerros"/>         
+                        </p:commandButton> 
+                        <p:commandButton value="InvertirExtremos" >
+                            <p:ajax listener="#{listaSEController.intercambiarExtremos()}" update="panelPerros"/>  
+                        </p:commandButton>
+
+                        <p:commandButton value="Eliminar" >
+                            <p:ajax listener="#{listaSEController.eliminar()}" update="panelPerros"/>  
+                        </p:commandButton>  
+
+                    </p:panelGrid>
+
+                    <p:panelGrid>
+
+                        <p:outputLabel  value="Seleccione el Genero: " />
+                        <p:selectOneMenu id="genero" value="#{listaSEController.generoWeb}" style="width:200px">
+                            <p:ajax listener="#{listaSEController.ordenarGenero()}" update="panelPerros" />
+                            <f:selectItem itemLabel="Seleccione Genero" itemValue="default" noSelectionOption="true" />
+                            <f:selectItem itemLabel="macho" itemValue="macho" noSelectionOption="true"/>
+                            <f:selectItem itemLabel="hembra" itemValue="hembra" noSelectionOption="true" />
+                            <f:selectItems value="#{listaSEController.generoWeb}" />
+                        </p:selectOneMenu>  
+
+
+                    </p:panelGrid>
+
+
+                </p:panelGrid>
+            </p:panel>
+        </h:form>
+
+
+    </ui:define>
+
+</ui:composition>
