@@ -13,7 +13,7 @@
     <ui:define name="content">
         Listado de Perros
         <h:form id="form">
-            <p:panel id="panelPerros" header="Listado de Perros">
+            <p:panel id="panelPerros" header="Listado de Perros - #{listaSEController.listaPerros.contarNodos()}">
                 <p:panelGrid id="pnlPerros" columns="2">
                     <p:outputLabel value="Nombre"/>
                     <p:outputLabel value="#{listaSEController.perroMostrar.nombre}"/>
@@ -23,60 +23,72 @@
                     <p:outputLabel value="#{listaSEController.perroMostrar.numero}"/>
                 </p:panelGrid>
 
-                <p:panelGrid id="buscarPerro" columns="3">
-                    <p:outputLabel value="Ingrese Posicion a Buscar"/>
-                    <p:inputText id="posicion" required="true" value="#{listaSEController.posicion}"/>
-                    <p:commandButton value="Buscar" action="#{listaSEController.buscar()}" update="pnlPerros"/>
-
-
-
-
-                </p:panelGrid>
-
                 <p:panelGrid>
                     <p:commandButton value="Primero" disabled="#{listaSEController.temp == listaSEController.listaPerros.cabeza}">
                         <p:ajax listener="#{listaSEController.irPrimero()}" update="panelPerros"/>  
                     </p:commandButton>  
+
                     <p:commandButton value="Siguiente " disabled="#{listaSEController.temp.siguiente == null}">
                         <p:ajax listener="#{listaSEController.irSiguiente()}" update="panelPerros"/>  
-                    </p:commandButton>   
+                    </p:commandButton> 
+
                     <p:commandButton value="Ultimo" disabled="#{listaSEController.temp.siguiente == null}">
                         <p:ajax listener="#{listaSEController.irUltimo()}" update="panelPerros"/>  
                     </p:commandButton> 
 
                     <p:panelGrid>
                         <p:commandButton value="InvertirLista" >
-                            <p:ajax listener="#{listaSEController.invertir()}" update="panelPerros"/>         
+                            <p:ajax listener="#{listaSEController.invertir()}" update="panelPerros,diagrama"/>         
                         </p:commandButton> 
                         <p:commandButton value="InvertirExtremos" >
-                            <p:ajax listener="#{listaSEController.intercambiarExtremos()}" update="panelPerros"/>  
+                            <p:ajax listener="#{listaSEController.intercambiarExtremos()}" update="panelPerros,diagrama"/>  
                         </p:commandButton>
 
                         <p:commandButton value="Eliminar" >
-                            <p:ajax listener="#{listaSEController.eliminar()}" update="panelPerros"/>  
+                            <p:ajax listener="#{listaSEController.eliminar()}" update="panelPerros,diagrama"/>  
                         </p:commandButton>  
-
-                    </p:panelGrid>
+                    </p:panelGrid>        
 
                     <p:panelGrid>
-
                         <p:outputLabel  value="Seleccione el Genero: " />
                         <p:selectOneMenu id="genero" value="#{listaSEController.generoWeb}" style="width:200px">
-                            <p:ajax listener="#{listaSEController.ordenarGenero()}" update="panelPerros" />
+                            <p:ajax listener="#{listaSEController.ordenarGenero()}" update="panelPerros,diagrama" />
                             <f:selectItem itemLabel="Seleccione Genero" itemValue="default" noSelectionOption="true" />
                             <f:selectItem itemLabel="macho" itemValue="macho" noSelectionOption="true"/>
                             <f:selectItem itemLabel="hembra" itemValue="hembra" noSelectionOption="true" />
                             <f:selectItems value="#{listaSEController.generoWeb}" />
-                        </p:selectOneMenu>  
-
-
+                        </p:selectOneMenu>
+                        <p:commandButton value="LimpiarDiagrama" action="#{listaSEController.limpiarDiagrama()}" update="panelPerros,diagrama"/>
                     </p:panelGrid>
-
-
+                    <p:diagram id="diagrama" value="#{listaSEController.model}" style="height:200px" styleClass="ui-widget-content" />
                 </p:panelGrid>
             </p:panel>
         </h:form>
 
+        <h:form>
+            <p:panel header="Buscar Perro Por Posicion">
+                <p:outputLabel value="Ingrese la posicion a buscar"/>
+                <p:spinner id="datoBuscar" value="#{listaSEController.datoBuscar}" min="1" max="#{listaSEController.listaPerros.contarNodos()}"/>
+                <p:commandButton value="Buscar" update="pnlPerroEnc,:form" action="#{listaSEController.buscarPerro()}"
+                                 oncomplete="PF('dlgPerroEnc').show();">
+                </p:commandButton>
+            </p:panel>
+            <p:dialog header="Perro encontrado" widgetVar="dlgPerroEnc" modal="true" height="200" closeOnEscape="true">
+                <p:panel id="pnlPerroEnc" header="Datos Perro">
+                    <p:panelGrid columns="2">
+                        <h:outputText value="Nombre"/>
+                        <h:outputText value="#{listaSEController.perroEncontrado.nombre}"/>
+                        <h:outputText value="Edad"/>
+                        <h:outputText value="#{listaSEController.perroEncontrado.edad}"/>
+                        <h:outputText value="NUmero"/>
+                        <h:outputText value="#{listaSEController.perroEncontrado.numero}"/>
+                        <h:outputText value="Genero"/>
+                        <h:outputText value="#{listaSEController.perroEncontrado.genero}"/>
+                    </p:panelGrid>
+                </p:panel>
+            </p:dialog>
+
+        </h:form>
 
     </ui:define>
 

@@ -13,9 +13,47 @@
             Paseo de Perros
             <ui:insert name="titulo_perro" >
                 <p:growl id="grwlErrores"/>
-            
+
             </ui:insert>
         </title>
+
+        <style type="text/css">
+            .ui-diagram-element {   
+                width:6em; 
+                height:4em;     
+                line-height:4em;
+                text-align: center;
+                box-shadow: 0 5px 10px rgba(0, 0, 0, 0.8);
+                border-radius: 4px;
+                border: 1px solid transparent;
+                background-color: #98AFC7;
+                color: #ffffff;
+            }
+
+            .ui-diagram-success {
+                background-color: #ff0000;
+                color: #ffffff;
+                border-color: #7ab02c;
+            }
+
+            .ui-diagram-inicial {
+                background-color: #98AFC7;
+                color: #ffffff;
+                border-color: #7ab02c;
+            }
+
+            .ui-diagram-fail {
+                background-color: #C34A2C;
+                color: #ffffff;
+            }
+
+            .flow-label {
+                font-size: 24px;
+                font-weight: bold;
+                color: #816A51;
+            }
+        </style>
+
     </h:head>
 
     <h:body>
@@ -45,7 +83,7 @@
         <div id="bottom">
             <ui:insert name="bottom">
                 <center>                    
-                    <h:graphicImage url="/resources/images/lobo.png" width="5%"/>                    
+                    <h:graphicImage url="/resources/images/lobo.png" width="10%"/>                    
                 </center>               
 
             </ui:insert>
