@@ -12,6 +12,7 @@
 
     <ui:define name="content">
         Listado de Perros
+        <p:growl id="grwlErroresHome"/>
         <h:form id="form">
             <p:panel id="panelPerros" header="Listado de Perros - #{listaSEController.listaPerros.contarNodos()}">
                 <p:panelGrid id="pnlPerros" columns="2">
@@ -28,7 +29,7 @@
                         <p:ajax listener="#{listaSEController.irPrimero()}" update="panelPerros"/>  
                     </p:commandButton>  
 
-                    <p:commandButton value="Siguiente " disabled="#{listaSEController.temp.siguiente == null}">
+                    <p:commandButton value="Siguiente" disabled="#{listaSEController.temp.siguiente == null}">
                         <p:ajax listener="#{listaSEController.irSiguiente()}" update="panelPerros"/>  
                     </p:commandButton> 
 
@@ -38,14 +39,14 @@
 
                     <p:panelGrid>
                         <p:commandButton value="InvertirLista" >
-                            <p:ajax listener="#{listaSEController.invertir()}" update="panelPerros,diagrama"/>         
+                            <p:ajax listener="#{listaSEController.invertir()}" update=":grwlErroresHome,panelPerros,diagrama"/>         
                         </p:commandButton> 
                         <p:commandButton value="InvertirExtremos" >
-                            <p:ajax listener="#{listaSEController.intercambiarExtremos()}" update="panelPerros,diagrama"/>  
+                            <p:ajax listener="#{listaSEController.intercambiarExtremos()}" update=":grwlErroresHome,panelPerros,diagrama"/>  
                         </p:commandButton>
 
                         <p:commandButton value="Eliminar" >
-                            <p:ajax listener="#{listaSEController.eliminar()}" update="panelPerros,diagrama"/>  
+                            <p:ajax listener="#{listaSEController.eliminar()}" update=":grwlErroresHome,panelPerros,diagrama"/>  
                         </p:commandButton>  
                     </p:panelGrid>        
 
@@ -69,8 +70,8 @@
             <p:panel header="Buscar Perro Por Posicion">
                 <p:outputLabel value="Ingrese la posicion a buscar"/>
                 <p:spinner id="datoBuscar" value="#{listaSEController.datoBuscar}" min="1" max="#{listaSEController.listaPerros.contarNodos()}"/>
-                <p:commandButton value="Buscar" update="pnlPerroEnc,:form" action="#{listaSEController.buscarPerro()}"
-                                 oncomplete="PF('dlgPerroEnc').show();">
+                <p:commandButton value="Buscar" update=":grwlErroresHome,pnlPerroEnc,:form" action="#{listaSEController.buscarPerro()}"
+                                 oncomplete="PF('dlgPerroEnc').show();" disabled="#{listaSEController.perroMostrar.nombre == null}">
                 </p:commandButton>
             </p:panel>
             <p:dialog header="Perro encontrado" widgetVar="dlgPerroEnc" modal="true" height="200" closeOnEscape="true">

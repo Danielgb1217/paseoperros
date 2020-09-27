@@ -7,8 +7,8 @@
 
     <h:head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-        <h:outputStylesheet name="./css/default.css"/>
-        <h:outputStylesheet name="./css/cssLayout.css"/>
+       <!-- <h:outputStylesheet name="./css/default.css"/>
+        <h:outputStylesheet name="./css/cssLayout.css"/> -->
         <title>
             Paseo de Perros
             <ui:insert name="titulo_perro" >
@@ -42,9 +42,9 @@
                 border-color: #7ab02c;
             }
 
-            .ui-diagram-fail {
-                background-color: #C34A2C;
-                color: #ffffff;
+            .ui-diagram-invertirExtremos {
+                background-color: #AFAFAF;
+                color: #045491;
             }
 
             .flow-label {
@@ -64,8 +64,8 @@
                     <p:menubar>
                         <p:submenu label="Inicio" icon="pi pi-file">
                             <p:submenu label="Gestion Perros" icon="pi pi-briefcase">
-                                <p:menuitem value="Listar Perros" action="home" />
-                                <p:menuitem value="Ingresar Perros" action="ingresar_perro"/>
+                                <p:menuitem value="Listar Perros" action="home" ajax="false"/>
+                                <p:menuitem value="Ingresar Perros" action="#{listaSEController.crearPerro()}"/>
                             </p:submenu>
                             <p:menuitem value="Open" url="#" />
                             <p:separator />

@@ -3,7 +3,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:p="http://primefaces.org/ui">
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
 
     <body>
 
@@ -15,10 +16,34 @@
 
 
             <ui:define name="content">
-                <h:form>
-                    <p:panel header="Adicionar perros">
-                        <p:outputLabel value="Nombre"/>
-                        <p:outputLabel value="#{listaSEController.listaPerros.cabeza.dato.nombre}"/>
+                <p:growl id="grwlErrores"/>
+                <h:form id="formIngresarPerro" prependId="false">
+                    <p:panel header="Formulario para Adicionar Perros">
+                        <p:panelGrid columns="2">
+                            <h:outputText value="Numero"/>
+                            <p:spinner value="#{listaSEController.perroEncontrado.numero}" min="1" required="true"/>
+                            <h:outputText value="Nombre"/>
+                            <p:inputText id="nombre" value="#{listaSEController.perroEncontrado.nombre}" required="true"/>
+                            <h:outputText value="Edad"/>
+                            <p:spinner value="#{listaSEController.perroEncontrado.edad}" min="1" required="true"/>
+                            <h:outputText value="Genero"/>
+                            <p:selectOneMenu id="genero" value="#{listaSEController.perroEncontrado.genero}" style="width:200px">                                                          
+                                <f:selectItem itemLabel="macho" itemValue="macho" noSelectionOption="true"/>
+                                <f:selectItem itemLabel="hembra" itemValue="hembra" noSelectionOption="true" />                                
+                            </p:selectOneMenu>
+
+                            <p:outputLabel value="Ubicacion"/>
+                            <p:selectOneMenu id="ubicacion" required="true" value="#{listaSEController.seleccionarUbicacion}">  
+                                <f:selectItem itemLabel="Seleccione" itemEscaped="true"/>
+                                <f:selectItem itemLabel="AL inicio" itemValue="1"/>
+                                <f:selectItem itemLabel="Al final" itemValue="2"/>                                
+                            </p:selectOneMenu>
+
+
+                            <p:commandButton value="Guardar" update=":grwlErrores,formIngresarPerro" action="#{listaSEController.guardarPerro()}"/>                                
+                            <p:commandButton value="Limpiar" update="formIngresarPerro" action="#{listaSEController.crearPerro()}"/>                   
+                        </p:panelGrid>
+
                     </p:panel>
                 </h:form>            
             </ui:define>

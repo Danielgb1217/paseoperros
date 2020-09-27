@@ -24,7 +24,7 @@ import org.primefaces.model.diagram.overlay.LabelOverlay;
 @Named(value = "listaSEController")
 @SessionScoped
 public class ListaSEController implements Serializable {
-
+    
     private ListaSE listaPerros;
     private Perro perroMostrar;
     private Nodo temp;
@@ -34,13 +34,15 @@ public class ListaSEController implements Serializable {
     private int posicion;
     private Nodo cabezaInicial;
     private DefaultDiagramModel model;
-
+    private int banderaPintarExtremos = 0;
+    private int seleccionarUbicacion = 0;
+    
     public ListaSEController() {
     }
-
+    
     @PostConstruct
     private void iniciar() {
-
+        
         listaPerros = new ListaSE();
         listaPerros.adicionarNodo(new Perro("Morgan", (byte) 1, (byte) 4, "macho"));
         listaPerros.adicionarNodo(new Perro("Tito", (byte) 2, (byte) 1, "macho"));
@@ -52,13 +54,90 @@ public class ListaSEController implements Serializable {
         listaPerros.adicionarNodo(new Perro("Helver", (byte) 8, (byte) 65, "macho"));
         listaPerros.adicionarNodo(new Perro("Fluflu", (byte) 9, (byte) 17, "hembra"));
         listaPerros.adicionarNodo(new Perro("Carlos", (byte) 10, (byte) 50, "macho"));
-
+        listaPerros.adicionarNodo(new Perro("Andres", (byte) 11, (byte) 50, "macho"));
+        listaPerros.adicionarNodo(new Perro("Tania", (byte) 12, (byte) 50, "hembra"));
+        listaPerros.adicionarNodo(new Perro("Camila", (byte) 13, (byte) 50, "hembra"));
+        listaPerros.adicionarNodo(new Perro("Tobby", (byte) 14, (byte) 50, "macho"));
+        listaPerros.adicionarNodo(new Perro("Javier", (byte) 15, (byte) 50, "macho"));
+        listaPerros.adicionarNodo(new Perro("Ana", (byte) 16, (byte) 50, "hembra"));
+        listaPerros.adicionarNodo(new Perro("Lupe", (byte) 17, (byte) 50, "hembra"));
+        
         perroMostrar = listaPerros.getCabeza().getDato();//para que quede mostrando el primero
         temp = listaPerros.getCabeza(); //al mismo objeto le pongo otro apodo
         cabezaInicial = listaPerros.getCabeza();
         iniciarModelo();
-
+        
     }
+
+    //**********************************setter and getter***********************************
+    public int getDatoBuscar() {
+        return datoBuscar;
+    }
+    
+    public void setDatoBuscar(int datoBuscar) {
+        this.datoBuscar = datoBuscar;
+    }
+    
+    public Perro getPerroEncontrado() {
+        return perroEncontrado;
+    }
+    
+    public void setPerroEncontrado(Perro perroEncontrado) {
+        this.perroEncontrado = perroEncontrado;
+    }
+    
+    public Nodo getTemp() {
+        return temp;
+    }
+    
+    public void setTemp(Nodo temp) {
+        this.temp = temp;
+    }
+    
+    public Perro getPerroMostrar() {
+        return perroMostrar;
+    }
+    
+    public void setPerroMostrar(Perro perroMostrar) {
+        this.perroMostrar = perroMostrar;
+    }
+    
+    public ListaSE getListaPerros() {
+        return listaPerros;
+    }
+    
+    public void setListaPerros(ListaSE listaPerros) {
+        this.listaPerros = listaPerros;
+    }
+    
+    public int getPosicion() {
+        return posicion;
+    }
+    
+    public void setPosicion(int posicion) {
+        this.posicion = posicion;
+    }
+    
+    public String getGeneroWeb() {
+        return generoWeb;
+    }
+    
+    public void setGeneroWeb(String generoWeb) {
+        this.generoWeb = generoWeb;
+    }
+    
+    public DiagramModel getModel() {
+        return model;
+    }
+    
+    public int getSeleccionarUbicacion() {
+        return seleccionarUbicacion;
+    }
+    
+    public void setSeleccionarUbicacion(int seleccionarUbicacion) {
+        this.seleccionarUbicacion = seleccionarUbicacion;
+    }
+
 
     /* *******************************Mis metodos*********************************************************
 
@@ -164,12 +243,16 @@ public class ListaSEController implements Serializable {
         temp = temp.getSiguiente();
         perroMostrar = temp.getDato();
     }
-
+    
     public void irPrimero() {
-        temp = listaPerros.getCabeza();
-        perroMostrar = temp.getDato();
+        if (listaPerros.getCabeza() != null) {
+            temp = listaPerros.getCabeza();
+            perroMostrar = temp.getDato();
+        } else {
+            JsfUtil.addErrorMessage("La lista de perros esta vacia");
+        }
     }
-
+    
     public void irUltimo() {
         temp = listaPerros.getCabeza();
         while (temp.getSiguiente() != null) {
@@ -177,27 +260,33 @@ public class ListaSEController implements Serializable {
         }
         perroMostrar = temp.getDato();
     }
-
+    
     public void invertir() {
         //llamo al metodo de la ListaSE desde aca para crear un sincronismo
         listaPerros.invertirLista();
         iniciarModelo();
         irPrimero();//Me ubico en el primero dato despues de invertirlos
     }
-
+    
     public void intercambiarExtremos() {
         //llamo al metodo de la ListaSE desde aca para crear un sincronismo
         listaPerros.intercambiarExtremos();
-        iniciarModelo();
+        
         irPrimero();//Me ubico en el primero dato despues de invertirlos
-    }
-
-    public void eliminar() {
-        listaPerros.eliminarNodo(temp.getDato());
+        banderaPintarExtremos = 1;
         iniciarModelo();
-        irPrimero();
     }
-
+    
+    public void eliminar() {
+        if (listaPerros.getCabeza() != null) {
+            listaPerros.eliminarNodo(temp.getDato());
+            iniciarModelo();
+            irPrimero();
+        } else {
+            JsfUtil.addErrorMessage("NO hay Perros para eliminar");
+        }
+    }
+    
     public void ordenarGenero() {
         if (this.generoWeb.equals("default")) {
             listaPerros.setCabeza(cabezaInicial);
@@ -208,16 +297,80 @@ public class ListaSEController implements Serializable {
         }
         iniciarModelo();
     }
-
+    
     public void buscarPerro() {
-        perroEncontrado = listaPerros.encontrarxPosicion(datoBuscar);
-        iniciarModelo();
+        if (listaPerros.getCabeza() != null) {
+            perroEncontrado = listaPerros.encontrarxPosicion(datoBuscar);
+            iniciarModelo();
+        } else {
+            JsfUtil.addErrorMessage("NO hay perros para mostrar");
+        }
     }
 
     //*****************************************Muestra graficamente las conexiones de perros ****************************
     public void iniciarModelo() {
 
+        //*******************************************Metodo pintar Perros Profe*****************************
+        //Instanciar e modelo
         model = new DefaultDiagramModel();
+        //Definirle al modelo la cantidad de enlaces -1 (infinito)
+        model.setMaxConnections(-1);
+        
+        FlowChartConnector connector = new FlowChartConnector();
+        connector.setPaintStyle("{strokeStyle:'#C7B097',lineWidth:3}");
+        model.setDefaultConnector(connector);
+
+        //pregunto si hay datos
+        if (listaPerros.getCabeza() != null) {
+            //Llamo a mi ayudante y lo ubico en el primero
+            Nodo ayudante = listaPerros.getCabeza();
+            //recorro mientras el ayudante tenga datos
+            int posX = 2;
+            int posY = 2;
+            int contFila = 0;
+            while (ayudante != null) {
+                contFila++;
+                Element perroPintar = new Element(ayudante.getDato().getNombre(), posX + "em", posY + "em");
+                
+                perroPintar.addEndPoint(new BlankEndPoint(EndPointAnchor.RIGHT));
+                perroPintar.addEndPoint(new BlankEndPoint(EndPointAnchor.LEFT));
+                model.addElement(perroPintar);
+                ayudante = ayudante.getSiguiente();
+                posX = posX + 8;
+
+                //condicion para que salte de fila cuando se cuenten 7 perritos
+                if (contFila % 10 == 0) {
+                    posX = 2;
+                    posY = posY + 6;
+                }
+                
+                if (contFila == datoBuscar) {
+                    perroPintar.setStyleClass("ui-diagram-success");
+                }
+                
+                if (banderaPintarExtremos == 1) {
+                    if (contFila == 1) {
+                        perroPintar.setStyleClass("ui-diagram-invertirExtremos");
+                    }
+                    if (contFila == listaPerros.contarNodos()) {
+                        perroPintar.setStyleClass("ui-diagram-invertirExtremos");                        
+                        banderaPintarExtremos = 0;
+                    }
+                    
+                }
+            }
+
+            // el ayudante quedo en el enlace del último
+            //Ya pinte todos los elementos y los puntos de enlace
+            for (int i = 0; i < model.getElements().size() - 1; i++) {
+                model.connect(createConnection(model.getElements().get(i).getEndPoints().get(0),
+                        model.getElements().get(i + 1).getEndPoints().get(1), null));
+            }
+        }
+        //Metodo profe**********************************************************************************************************
+
+        /*Metodo mio**************************************************************************************************************     
+       model = new DefaultDiagramModel();
         model.setMaxConnections(-1);
 
         FlowChartConnector connector = new FlowChartConnector();
@@ -270,10 +423,9 @@ public class ListaSEController implements Serializable {
 
             temp = temp.getSiguiente();
         }
-        irPrimero();
-
+        irPrimero();   *///************************************************************************************************
     }
-
+    
     private Connection createConnection(EndPoint from, EndPoint to, String label) {
         Connection conn = new Connection(from, to);
         conn.getOverlays().add(new ArrowOverlay(20, 20, 1, 1));
@@ -282,71 +434,36 @@ public class ListaSEController implements Serializable {
         }
         return conn;
     }
-    
-    public void limpiarDiagrama(){
+
+    //metodo que retornoa la regla de navegacion y reinicia los datos...se llama desde el template principal para direccionarme a  la pag
+    public String crearPerro() {        
+        perroEncontrado = new Perro();  //inicio el perro para que no se lleve los datos del perro que busco        
+        return "crear";                 //se va para el template con la palabra crear me dirigira a la pestania de crear perro
+    }                                   //la palabra crear se creo desde el archivo faces config creando la regla correspondiente
+
+    public void limpiarDiagrama() {
         datoBuscar = 0;
-        iniciarModelo();        
+        iniciarModelo();
     }
-
-    //**********************************setter and getter***********************************
-    public int getDatoBuscar() {
-        return datoBuscar;
+    
+    public void guardarPerro() {
+        
+        switch (seleccionarUbicacion) {
+            
+            case 1:
+                listaPerros.adicionarNodoAlInicio(perroEncontrado);
+                break;
+            
+            case 2:
+                listaPerros.adicionarNodo(perroEncontrado);
+                break;
+            
+        }
+        
+        perroEncontrado = new Perro();
+        iniciarModelo();    //puedo crear un metodo que devuelva un string home para que el metodo me inicie el modelo y desde
+        //el template llamo al metodo para que cada que me direccione a home se llame al metodo inicar modelo
+        JsfUtil.addSuccessMessage("EL perro ha sido adicionado con exito");
     }
-
-    public void setDatoBuscar(int datoBuscar) {
-        this.datoBuscar = datoBuscar;
-    }
-
-    public Perro getPerroEncontrado() {
-        return perroEncontrado;
-    }
-
-    public void setPerroEncontrado(Perro perroEncontrado) {
-        this.perroEncontrado = perroEncontrado;
-    }
-
-    public Nodo getTemp() {
-        return temp;
-    }
-
-    public void setTemp(Nodo temp) {
-        this.temp = temp;
-    }
-
-    public Perro getPerroMostrar() {
-        return perroMostrar;
-    }
-
-    public void setPerroMostrar(Perro perroMostrar) {
-        this.perroMostrar = perroMostrar;
-    }
-
-    public ListaSE getListaPerros() {
-        return listaPerros;
-    }
-
-    public void setListaPerros(ListaSE listaPerros) {
-        this.listaPerros = listaPerros;
-    }
-
-    public int getPosicion() {
-        return posicion;
-    }
-
-    public void setPosicion(int posicion) {
-        this.posicion = posicion;
-    }
-
-    public String getGeneroWeb() {
-        return generoWeb;
-    }
-
-    public void setGeneroWeb(String generoWeb) {
-        this.generoWeb = generoWeb;
-    }
-
-    public DiagramModel getModel() {
-        return model;
-    }
-
+    
 }
